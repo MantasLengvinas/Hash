@@ -1,6 +1,7 @@
 ﻿using Hash_algorithm.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Hash_algorithm
@@ -12,6 +13,7 @@ namespace Hash_algorithm
         {
             List<string> arguments = args.ToList();
             string inputParam;
+            List<Result> results = new List<Result>();
 
             HashService hashService = new HashService();
 
@@ -20,18 +22,26 @@ namespace Hash_algorithm
 
             if(inputParam == "-in")
             {
-                List<Result> results = new List<Result>();
-
                 foreach(string arg in arguments)
                 {
                     results.Add(new Result() { Input = arg, Output = hashService.Hash(arg) });
                 }
+            }
 
-
-                foreach(Result r in results)
+            if(inputParam == "-inf")
+            {
+                foreach(string arg in arguments)
                 {
-                    Console.WriteLine("Input: {0} Output: {1} \n", r.Input, r.Output);
+                    string readedData = File.ReadAllText(arg);
+
+                    results.Add(new Result() { Input = readedData, Output = hashService.Hash(readedData)});
                 }
+            }
+
+
+            foreach (Result r in results)
+            {
+                Console.WriteLine("Input: {0} Output: {1}", r.Input, r.Output);
             }
         }
     }
