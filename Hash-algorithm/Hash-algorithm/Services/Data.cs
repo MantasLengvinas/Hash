@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace Hash_algorithm.Services
 {
+
+    public class Result
+    {
+        public string Input { get; set; }
+        public string Output { get; set; }
+    }
+
     public class Data
     {
         public List<string> GenerateStrings()
