@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Hash_algorithm.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Hash_algorithm
 {
@@ -6,7 +9,11 @@ namespace Hash_algorithm
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            List<string> arguments = args.ToList();
+
+            HashService hashService = new HashService();
+
+            string hash = hashService.Hash("Mantas");
         }
     }
 }
