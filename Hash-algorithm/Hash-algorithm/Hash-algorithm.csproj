@@ -6,8 +6,4 @@
     <RootNamespace>Hash_algorithm</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Input\" />
-  </ItemGroup>
-
 </Project>

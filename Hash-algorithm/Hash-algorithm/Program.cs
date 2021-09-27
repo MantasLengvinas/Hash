@@ -6,25 +6,51 @@ using System.Linq;
 
 namespace Hash_algorithm
 {
-
     class Program
     {
         static void Main(string[] args)
         {
             List<string> arguments = args.ToList();
-            string inputParam;
+            string inputParam = "", outputParam = "", settingParam = "";
             List<Result> results = new List<Result>();
+            TimeSpan timeElapsed = new TimeSpan();
 
             HashService hashService = new HashService();
 
-            inputParam = arguments.First();
-            arguments.Remove(inputParam);
+            if (!arguments.First().Contains("-in"))
+            {
+                Console.WriteLine("You must to specify input parameter!");
+                Environment.Exit(1);
+            }
+            else
+            {
+                inputParam = arguments.First();
+                arguments.Remove(inputParam);
+            }
+
+            if (!arguments.First().Contains("-out"))
+            {
+                Console.WriteLine("You must to specify output parameter!");
+                Environment.Exit(1);
+            }
+            else
+            {
+                outputParam = arguments.First();
+                arguments.Remove(outputParam);
+            }
+
+            if (arguments.First().Contains("-"))
+            {
+                settingParam = arguments.First();
+                arguments.Remove(settingParam);
+            }           
+
 
             if(inputParam == "-in")
             {
                 foreach(string arg in arguments)
                 {
-                    results.Add(new Result() { Input = arg, Output = hashService.Hash(arg) });
+                    results.Add(new Result() { Input = arg, Output = hashService.Hash(arg, ref timeElapsed) });
                 }
             }
 
@@ -33,15 +59,50 @@ namespace Hash_algorithm
                 foreach(string arg in arguments)
                 {
                     string readedData = File.ReadAllText(arg);
-
-                    results.Add(new Result() { Input = readedData, Output = hashService.Hash(readedData)});
+                    if(readedData.Length > 0)
+                    {
+                        results.Add(new Result() { Input = readedData, Output = hashService.Hash(readedData, ref timeElapsed) });
+                    }
+                    
                 }
             }
 
 
-            foreach (Result r in results)
+            if(outputParam == "-out")
             {
-                Console.WriteLine("Input: {0} Output: {1}", r.Input, r.Output);
+                if(results.Count > 0)
+                {
+                    foreach (Result r in results)
+                    {
+                        Console.WriteLine("Input: {0} Output: {1}", r.Input, r.Output);
+                    }
+                    Console.WriteLine("Hashing took {0}ms", timeElapsed);
+                }
+                else
+                {
+                    Console.WriteLine("No results");
+                }
+            }
+
+            if(outputParam == "-outf")
+            {
+                if (!Directory.Exists(AppContext.BaseDirectory + @"Results\"))
+                {
+                    Directory.CreateDirectory(AppContext.BaseDirectory + @"Results\");
+                }
+
+                if (File.Exists(AppContext.BaseDirectory + @"Results\Results.txt"))
+                {
+                    File.Delete(AppContext.BaseDirectory + @"Results.txt");
+                }
+
+                foreach(Result r in results)
+                {
+                    File.AppendAllText(AppContext.BaseDirectory + @"Results\Results.txt", String.Format("Input: {0} Output: {1}\n", r.Input, r.Output));
+                }
+
+                Console.WriteLine("Results have been saved to files");
+                Console.WriteLine("Hashing took {0}ms", timeElapsed.TotalMilliseconds);
             }
         }
     }

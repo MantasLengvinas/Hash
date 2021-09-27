@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -9,8 +10,10 @@ namespace Hash_algorithm.Services
 {
     class HashService
     {
-        public string Hash(string input)
+        public string Hash(string input, ref TimeSpan timeElapsed)
         {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
             string hash = "";
             char[] hexChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
             UInt64 sum = 0;
@@ -46,6 +49,8 @@ namespace Hash_algorithm.Services
                     hash += hexChars[salt];
                 else hash += hexChars[1];
             }
+
+            timeElapsed += timer.Elapsed;
 
             return hash;
         }
