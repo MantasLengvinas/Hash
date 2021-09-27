@@ -16,12 +16,13 @@ namespace Hash_algorithm.Services
 
     public class Data
     {
-        public List<string> GenerateStrings()
+        public string GenerateRandomString(int l)
         {
-            return new List<string>();
+            return RandomStringGenerator(l);
         }
 
-        public string RandomStringGenerator(int l)
+
+        public static string RandomStringGenerator(int l)
         {
             string possibleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             string result = "";
@@ -30,11 +31,11 @@ namespace Hash_algorithm.Services
             {
                 byte[] uintB = new byte[sizeof(uint)];
 
-                while(l > 0)
+                while(l-- > 0)
                 {
                     rng.GetBytes(uintB);
                     uint number = BitConverter.ToUInt32(uintB, 0);
-                    result.Append(possibleChars[(int)(number % (uint)possibleChars.Length)]);
+                    result += (possibleChars[(int)(number % (uint)possibleChars.Length)]);
                 }
             }
 

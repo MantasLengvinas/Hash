@@ -11,11 +11,12 @@ namespace Hash_algorithm
         static void Main(string[] args)
         {
             List<string> arguments = args.ToList();
-            string inputParam = "", outputParam = "", settingParam = "";
+            string inputParam = "", outputParam = "", settingsParam = "";
             List<Result> results = new List<Result>();
             TimeSpan timeElapsed = new TimeSpan();
 
             HashService hashService = new HashService();
+            TestsService testsService = new TestsService();
 
             if (!arguments.First().Contains("-in"))
             {
@@ -41,9 +42,15 @@ namespace Hash_algorithm
 
             if (arguments.First().Contains("-"))
             {
-                settingParam = arguments.First();
-                arguments.Remove(settingParam);
-            }           
+                settingsParam = arguments.First();
+                arguments.Remove(settingsParam);
+            }
+            
+            if(settingsParam == "-t")
+            {
+                Console.WriteLine("Running tests..");
+
+            }
 
 
             if(inputParam == "-in")
@@ -93,7 +100,7 @@ namespace Hash_algorithm
 
                 if (File.Exists(AppContext.BaseDirectory + @"Results\Results.txt"))
                 {
-                    File.Delete(AppContext.BaseDirectory + @"Results.txt");
+                    File.Delete(AppContext.BaseDirectory + @"Results\Results.txt");
                 }
 
                 foreach(Result r in results)
