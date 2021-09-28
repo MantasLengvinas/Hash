@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,26 +15,21 @@ namespace Hash_algorithm.Services
         Data data = new Data();
         TimeSpan timeElapsed = new TimeSpan();
 
-        private bool InputLenghtTest()
+        public void RunTests()
         {
-            try
-            {
-                for (int i = 1; i < 10000; i *= 10)
-                {
-                    string output = hashService.Hash(data.GenerateRandomString(i), ref timeElapsed);
-                }
-
-                return true;
-            }
-            catch(Exception)
-            {
-                return false;
-            }
-
+            OutputLenghtTest();
+            Console.WriteLine("----------------------------------");
+            CollisionTest();
+            Console.WriteLine("----------------------------------");
+            SimilarityTest();
+            Console.WriteLine("----------------------------------");
+            SpeedTest();
         }
 
-        private bool OutputLenghtTest()
+        private void OutputLenghtTest()
         {
+            Console.WriteLine("Running output lenght test..");
+
             try
             {
                 for (int i = 1; i < 10000; i *= 10)
@@ -46,11 +42,11 @@ namespace Hash_algorithm.Services
                         throw new Exception("Output is not 256 bits");
                 }
 
-                return true;
+                Console.WriteLine("All result length 256 bits");
             }
             catch (Exception)
             {
-                return false;
+                Console.WriteLine("Output length test failed - output length not 256 bits");
             }
 
         }
@@ -125,7 +121,7 @@ namespace Hash_algorithm.Services
                 string s2 = data.GenerateRandomString(6);
 
                 BitArray bitArray1 = new BitArray(Encoding.UTF8.GetBytes(hashService.Hash(s1, ref timeElapsed)));
-                BitArray bitArray2 = new BitArray(Encoding.UTF8.GetBytes(hashService.Hash(s1, ref timeElapsed)));
+                BitArray bitArray2 = new BitArray(Encoding.UTF8.GetBytes(hashService.Hash(s2, ref timeElapsed)));
 
                 bitArray1.Xor(bitArray2);
 
@@ -152,6 +148,42 @@ namespace Hash_algorithm.Services
         }
 
 
+        private void SpeedTest()
+        {
+            Console.WriteLine("Running hash speed test..");
+            Console.WriteLine("Reading file konstitucija.txt \n");
+
+            List<string> lines = File.ReadAllLines("konstitucija.txt").ToList();
+            List<Result> results = new List<Result>();
+
+            timeElapsed = new TimeSpan();
+
+            foreach(string l in lines)
+            {
+                results.Add(new Result() { Input = l, Output = hashService.Hash(l, ref timeElapsed) });
+            }
+
+            if (!Directory.Exists(AppContext.BaseDirectory + @"Results\"))
+            {
+                Directory.CreateDirectory(AppContext.BaseDirectory + @"Results\");
+            }
+
+            if (File.Exists(AppContext.BaseDirectory + @"Results\Results.txt"))
+            {
+                File.Delete(AppContext.BaseDirectory + @"Results\Results.txt");
+            }
+
+            File.AppendAllText(AppContext.BaseDirectory + @"Results\Results.txt", "Konstitucija.txt every line hashing..");
+
+            foreach (Result r in results)
+            {
+                File.AppendAllText(AppContext.BaseDirectory + @"Results\Results.txt", String.Format("Input: {0} Output: {1}\n", r.Input, r.Output));
+            }
+
+            Console.WriteLine("Speed test results have been saved to files");
+            Console.WriteLine("Hashing took {0}ms", timeElapsed.TotalMilliseconds);
+
+        }
 
         private float SimilarityCalculation(string s1, string s2)
         {

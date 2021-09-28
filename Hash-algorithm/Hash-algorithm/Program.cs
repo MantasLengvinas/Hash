@@ -49,67 +49,69 @@ namespace Hash_algorithm
             if(settingsParam == "-t")
             {
                 Console.WriteLine("Running tests..");
+                testsService.RunTests();
 
             }
-
-
-            if(inputParam == "-in")
+            else
             {
-                foreach(string arg in arguments)
+                if (inputParam == "-in")
                 {
-                    results.Add(new Result() { Input = arg, Output = hashService.Hash(arg, ref timeElapsed) });
-                }
-            }
-
-            if(inputParam == "-inf")
-            {
-                foreach(string arg in arguments)
-                {
-                    string readedData = File.ReadAllText(arg);
-                    if(readedData.Length > 0)
+                    foreach (string arg in arguments)
                     {
-                        results.Add(new Result() { Input = readedData, Output = hashService.Hash(readedData, ref timeElapsed) });
+                        results.Add(new Result() { Input = arg, Output = hashService.Hash(arg, ref timeElapsed) });
                     }
-                    
                 }
-            }
 
-
-            if(outputParam == "-out")
-            {
-                if(results.Count > 0)
+                if (inputParam == "-inf")
                 {
+                    foreach (string arg in arguments)
+                    {
+                        string readedData = File.ReadAllText(arg);
+                        if (readedData.Length > 0)
+                        {
+                            results.Add(new Result() { Input = readedData, Output = hashService.Hash(readedData, ref timeElapsed) });
+                        }
+
+                    }
+                }
+
+
+                if (outputParam == "-out")
+                {
+                    if (results.Count > 0)
+                    {
+                        foreach (Result r in results)
+                        {
+                            Console.WriteLine("Input: {0} Output: {1}", r.Input, r.Output);
+                        }
+                        Console.WriteLine("Hashing took {0}ms", timeElapsed);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No results");
+                    }
+                }
+
+                if (outputParam == "-outf")
+                {
+                    if (!Directory.Exists(AppContext.BaseDirectory + @"Results\"))
+                    {
+                        Directory.CreateDirectory(AppContext.BaseDirectory + @"Results\");
+                    }
+
+                    if (File.Exists(AppContext.BaseDirectory + @"Results\Results.txt"))
+                    {
+                        File.Delete(AppContext.BaseDirectory + @"Results\Results.txt");
+                    }
+
                     foreach (Result r in results)
                     {
-                        Console.WriteLine("Input: {0} Output: {1}", r.Input, r.Output);
+                        File.AppendAllText(AppContext.BaseDirectory + @"Results\Results.txt", String.Format("Input: {0} Output: {1}\n", r.Input, r.Output));
                     }
-                    Console.WriteLine("Hashing took {0}ms", timeElapsed);
-                }
-                else
-                {
-                    Console.WriteLine("No results");
-                }
-            }
 
-            if(outputParam == "-outf")
-            {
-                if (!Directory.Exists(AppContext.BaseDirectory + @"Results\"))
-                {
-                    Directory.CreateDirectory(AppContext.BaseDirectory + @"Results\");
+                    Console.WriteLine("Results have been saved to files");
+                    Console.WriteLine("Hashing took {0}ms", timeElapsed.TotalMilliseconds);
                 }
-
-                if (File.Exists(AppContext.BaseDirectory + @"Results\Results.txt"))
-                {
-                    File.Delete(AppContext.BaseDirectory + @"Results\Results.txt");
-                }
-
-                foreach(Result r in results)
-                {
-                    File.AppendAllText(AppContext.BaseDirectory + @"Results\Results.txt", String.Format("Input: {0} Output: {1}\n", r.Input, r.Output));
-                }
-
-                Console.WriteLine("Results have been saved to files");
-                Console.WriteLine("Hashing took {0}ms", timeElapsed.TotalMilliseconds);
             }
         }
     }
