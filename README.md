@@ -24,6 +24,7 @@ Funkcijos analizė:
 - Funkcija atspari kolizijai: buvo atlikta 100000 testų su skirtingais input string'ais ir nebuvo aptikta jokių kolizijų
 
 Hash'ų skirtingumo testų rezultatai: 
+
     - Mažiausias skirtumas HEX lygmenyje: 46.88%
     - Didžiausias skirtumas HEX lygmenyje: 96.88%
     - Mažiausias skirtumas HEX lygmenyje: 81.17%
